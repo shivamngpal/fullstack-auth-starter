@@ -44,7 +44,7 @@ You need to have [Node.js](https://nodejs.org/en/download/) and npm installed on
 1.  **Clone the repository:**
 
     ```sh
-    git clone [https://github.com/shivamngpal/fullstack-auth-starter.git](https://github.com/shivamngpal/fullstack-auth-starter.git)
+    git clone https://github.com/shivamngpal/fullstack-auth-starter.git
     ```
 
 2.  **Navigate to the project directory:**
