@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script>
+        async function signup(){
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            await axios.post("http://localhost:3000/signup",{
+                email : username,
+                password : password
+            });
+            alert("You are signed up");
+            // .then(response => {
+            //     document.getElementById("signup-msg").innerHTML = `<p style="color: green;">${response.data.msg}</p>`;
+            // })
+            // .catch(error => {
+            //     document.getElementById("signup-msg").innerHTML = `<p style="color: red;">Error: ${error.response?.data?.msg || error.message}</p>`;
+            // });
+        }
+        async function signin() {
+            const email = document.getElementById("signin-username").value;
+            const password = document.getElementById("signin-password").value;
+
+            const response = await axios.post("http://localhost:3000/signin",{
+                email,
+                password
+            });
+            // no need to store token using DOM manipulation
+            // const token = document.createElement('p');
+            // token.innerHTML = response.data.token;
+            // document.getElementById('signin-msg').appendChild(token);
+
+            // we store token in browser local storage and this help us with maintaining a session until we gets logged out
+            // does not matter how many times we refresh the website...token will be stored in localstorage until we logout
+            // or in our case, untill we close the website
+            localStorage.setItem("token", response.data.Token);
+            alert("You are signed in");
+        }
+
+        async function getUserInfo(){
+            const response = await axios.get("http://localhost:3000/me",{
+                headers : {
+                    authorization : localStorage.getItem("token")
+                }
+            });
+            const divToClear = document.getElementById('user-info');
+            divToClear.innerHTML='';
+            divToClear.innerHTML = "<p>Your email is : </p>"+response.data.email;
+        }
+
+        function logout(){
+            localStorage.removeItem("token");
+            alert("You have been logged out");
+        }
+    </script>
+</head>
+<body>
+    <div style="display: flex; justify-content: center; border-bottom: 0.8px solid black;">
+        <h1>Authentication</h1>
+    </div>
+
+    <!-- <div style="display: flex; justify-content: space-around;">
+        <h3 style="border-right: 0.5px solid black; padding-right: 10px;">Sign Up</h3>
+        <h3>Sign In</h3>
+        <h3>User Information</h3>
+        <h3>Logout</h3>
+
+
+    </div> -->
+
+    <div id="main-box" style="display: flex; justify-content: space-around;">
+        <div style="padding-right: 30px; border-right: 0.5px solid black;">
+            <h2>SignUp</h2>
+            <label for="username">Username : </label>
+            <input type="text" id="username" placeholder="UserName">
+            <br> <br>
+            <label for="password">Password : </label>
+            <input type="password" id="password" placeholder="Password">
+        
+            <button type="submit" onclick="signup()">SignUp</button>
+        </div>
+        
+    
+        <div style="padding-right: 30px; border-right: 0.5px solid black;">
+            <h2>SignIn</h2>
+            <label for="signin-username">Username : </label>
+            <input type="text" id="signin-username" placeholder="UserName">
+            <br> <br>
+            <label for="signin-password">Password : </label>
+            <input type="password" id="signin-password" placeholder="Password">
+        
+            <button type="submit" onclick="signin()">SignIn</button>
+        </div>
+    
+        <div style="padding-right: 30px; border-right: 0.5px solid black;">
+            <h2>User Information</h2>
+            <!-- <label for="username">Username : </label>
+            <input type="text" id="username" placeholder="UserName">
+            <br> <br>
+            <label for="password">Password : </label>
+            <input type="password" id="password" placeholder="Password"> -->
+            <div id="user-info">
+                <button type="submit" onclick="getUserInfo()">Show Info</button>
+            </div>
+    
+        </div>
+    
+        <div id="logout">
+            <h2>Logout</h2>
+            <!-- <label for="username">Username : </label>
+            <input type="text" id="username" placeholder="UserName">
+            <br> <br>
+            <label for="password">Password : </label>
+            <input type="password" id="password" placeholder="Password"> -->
+        
+            <button type="submit" onclick="logout()">Logout</button>
+        </div>
+        
+    </div>
+
+
+
+</body>
+</html>
